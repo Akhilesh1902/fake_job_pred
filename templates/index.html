@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+
+<body>
+    <div class="h-screen flex flex-col">
+
+        <h1 class="text-3xl py-4 text-center bg-green-400 mb-4 font-bold">
+            Fake Job Detection Using Random Forest Classifier
+        </h1>
+
+        <div class="h-full overflow-y-scroll">
+            <p>
+                F1-Score = 0.4516
+                Precision = 1.0
+                Recall = 0.2917
+                Accuracy = 0.9683
+
+                The model achieves a F1-Score of .04516, Recall
+            </p>
+            <h2 class="text-xl font-bold py-2">Below are the test data (3% from the data set)</h2>
+            <table>
+                <tr>
+                    {% for item in headings %}
+                    <th>{{item}}</th>
+                    {% endfor %}
+                </tr>
+                {% for row in data %}
+                <tr>
+                    {% for cell in row %}
+                    <td class="pl-4">{{cell}}</td>
+                    {% endfor %}
+                    <td><button data-jobid={{row[0]}} class="testFake bg-blue-400 px-2 py-1 my-2 rounded">Fake
+                            test</button>
+                    </td>
+                </tr>
+
+                {% endfor %}
+            </table>
+
+        </div>
+        <div class="h-[25%]">
+            <h2 class="text-lg font-bold">Result: <span id="result-span"></span></h2>
+        </div>
+    </div>
+
+    <!-- <form id="form" class="p-4">
+        <input class="outline-2 p-1 rounded" type="text">
+        <button type="submit">Submit</button>
+
+    </form> -->
+
+    <script>
+        // const form = document.getElementById('form');
+        // form.addEventListener('submit', (e) => {
+        //     e.preventDefault();
+        //     const input = document.querySelector('input');
+        //     const value = input.value;
+        //     console.log(value);
+        // });
+
+        document.querySelectorAll(".testFake").forEach(btn => {
+            // console.log(btn)
+            btn.addEventListener("click", function () {
+                const jobId = btn.getAttribute("data-jobid");
+                fetch('/process', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message: "Hello from HTML", jobId })
+                })
+                    .then(response => response.text())
+                    .then(data => {
+                        console.log(data);
+                        document.getElementById("result-span").innerHTML = data === "0" ? "Is not Fake" : 'Is Fake';
+                        document.getElementById("result-span").style.color = data === "0" ? "green" : 'red';
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            })
+        });
+    </script>
+</body>
+
+</html>
