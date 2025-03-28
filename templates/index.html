@@ -10,32 +10,38 @@
 <body>
     <div class="h-screen flex flex-col">
 
-        <h1 class="text-3xl py-4 text-center bg-green-400 mb-4 font-bold">
+        <h1 class="text-3xl py-4 text-center bg-green-400 mb-4 font-bold uppercase">
             Fake Job Detection Using Random Forest Classifier
         </h1>
+        <!-- <p>
+            F1-Score = 0.4516
+            Precision = 1.0
+            Recall = 0.2917
+            Accuracy = 0.9683
 
-        <div class="h-full overflow-y-scroll">
-            <p>
-                F1-Score = 0.4516
-                Precision = 1.0
-                Recall = 0.2917
-                Accuracy = 0.9683
+            The model achieves a F1-Score of .04516, Recall
+        </p> -->
+        <h2 class="text-xl font-bold py-2">Below are the test data (3% from the data set)</h2>
+        <!-- <div>
+            <button data-type="all" class="loadData-btn bg-blue-400 px-2 py-1 my-2 rounded">Load All Data</button>
+            <button data-type="fake" class="loadData-btn bg-blue-400 px-2 py-1 my-2 rounded">Load only Fake
+                Data</button>
+        </div> -->
+        <div class="h-full grid items-center overflow-y-scroll border border-gray-400">
 
-                The model achieves a F1-Score of .04516, Recall
-            </p>
-            <h2 class="text-xl font-bold py-2">Below are the test data (3% from the data set)</h2>
-            <table>
-                <tr>
+            <table class="border-seperate border border-gray-400">
+                <tr class="border border-gray-400">
                     {% for item in headings %}
-                    <th>{{item}}</th>
+                    <th class="border border-gray-400">{{item}}</th>
                     {% endfor %}
                 </tr>
                 {% for row in data %}
                 <tr>
                     {% for cell in row %}
-                    <td class="pl-4">{{cell}}</td>
+                    <td class="pl-4 border border-gray-400">{{cell}}</td>
                     {% endfor %}
-                    <td><button data-jobid={{row[0]}} class="testFake bg-blue-400 px-2 py-1 my-2 rounded">Fake
+                    <td class="border border-gray-400 px-4"><button data-jobid={{row[0]}}
+                            class="testFake bg-blue-400 px-2 py-1 my-2 rounded">Fake
                             test</button>
                     </td>
                 </tr>
@@ -45,7 +51,7 @@
 
         </div>
         <div class="h-[25%]">
-            <h2 class="text-lg font-bold">Result: <span id="result-span"></span></h2>
+            <h2 class="text-2xl font-bold">Result: <span id="result-span"></span></h2>
         </div>
     </div>
 
@@ -63,7 +69,29 @@
         //     const value = input.value;
         //     console.log(value);
         // });
+        document.querySelectorAll('.loadData-btn').forEach(btn => {
+            btn.addEventListener('click', e => {
+                const type = btn.getAttribute("data-type");
+                console.log(type)
+                fetch('/loaddata', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ type })
+                })
+                    .then(response => response.text())
+                    .then(data => {
+                        console.log(data);
+                        // document.getElementById("result-span").innerHTML = data === "0" ? "Is not Fake" : 'Is Fake';
+                        // document.getElementById("result-span").style.color = data === "0" ? "green" : 'red';
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            })
 
+        })
         document.querySelectorAll(".testFake").forEach(btn => {
             // console.log(btn)
             btn.addEventListener("click", function () {

@@ -118,9 +118,31 @@ def singlePredict(single_data_point):
 # ‘/’ URL is bound with hello_world() function.
 def index():
     data = read_csv('data/fake_job_test.csv')
-    filtered_data = data[data['fraudulent']==1]
-    filtered_data = filtered_data[["job_id","title","location"]]
+    # filtered_data = data[data['fraudulent']==1]
+    # filtered_data = filtered_data[["job_id","title","location"]]
+    filtered_data = data[["job_id","title","location"]]
     return render_template("index.html",headings=filtered_data.columns.values, data=filtered_data.to_numpy())
+
+@app.route('/loaddata', methods=['POST'])
+def loadData():
+    data = request.get_json()
+    csv_data = read_csv('data/fake_job_test.csv')
+    if(data['type']=='fake'):
+        filtered_data = csv_data[csv_data['fraudulent']==1]
+        filtered_data = filtered_data[["job_id","title","location"]]
+        print(filtered_data.to_dict())
+        return filtered_data.to_dict()
+        # return render_template("index.html",headings=filtered_data.columns.values, data=filtered_data.to_numpy())
+    
+    filtered_data = data[["job_id","title","location"]]
+    return filtered_data
+    # return render_template("index.html",headings=filtered_data.columns.values, data=filtered_data.to_numpy())
+
+
+    # print(data)
+    # return "hi"
+
+
 
 @app.route("/process", methods=["POST"])
 def process():
